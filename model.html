@@ -1,0 +1,410 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>BIGD-控制台</title>
+    <link rel="stylesheet" href="style/css.css" type="text/css" />
+</head>
+
+<script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/js.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/xhr.js" type="text/javascript" charset="utf-8"></script>
+
+<body>
+    <div id="container">
+        <div id="breed_console">
+            BIGD-控制台
+        </div>
+        <div id="nav">
+            <ul id="navbar"></ul>
+        </div>
+        <div id="page">
+        	<div class="operate_success" id="operate_success">成功更新<br /></div>
+        	<iframe id="id_iframe" name="id_iframe"style="display:none;"></iframe> 
+        	
+            <!-- <form action="cgi-bin/setstate.lua" method="post" enctype="multipart/form-data" onsubmit="return file_check()" target="id_iframe"> -->
+            <form action="cgi-bin/setstate.lua" method="post" onsubmit="return file_check()" target="id_iframe">
+                <div id="fw_type">
+                    <ul>
+                        <li><a id="fw_type_generic" class="fw_type_clicked">定位展示</a></li>
+                        <li><a id="fw_type_fullflash" class="fw_type_unclicked">功能配置</a></li>
+                    </ul>
+                    <div class="clearfloat"> </div>
+                </div>
+                <div id="fw_files">
+                    <div id="fw_files_generic"> 
+                    <div style="width:100%;height: 450px;overflow: auto;margin:0 auto;" >
+                            <table class="system_info" id = "buildp">
+                                <tbody id="mac_table" class="table1">
+                                    <tr >
+                                        <td class="th">coordinateX</td>
+                                        <td class="th">coordinateY</td>
+                                        <td class="th">coordinateZ</td>
+                                        <td class="th">terminalMAC</td>
+                                        <td class="th">timeStamp</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="operate">
+                            <!-- <button type="submit" id="345">开始</button> -->
+                            <input type="hidden" name="submit" value="pos" />
+                            <input type="button" value="清除" class="qingchu">
+                        </div>
+                    </div>
+
+                    <div id="fw_files_fullflash">
+                        <table class="system_info">
+                       		<tr><td colspan="2" style="text-align: center;">~~~~~~~~~~~~~状态区域~~~~~~~~~~~~</td></tr>
+	                        <tr>
+								<td class="th" colspan="2">
+	                                    <label>当前状态</label>
+										<input type="text" id="gstate" readonly="readonly" placeholder="please wait for a moment..." />
+								</td>
+	                        </tr>
+	                        <tr>
+								<td class="th" colspan="2">
+	                                    <label >当前功能</label>
+										<input type="text" id="gfun" readonly="readonly" placeholder="please wait for a moment..." />
+								</td>
+	                        </tr>
+	                        <tr>
+								<td class="th" colspan="2">
+	                                    <label >定位周期</label>
+										<input type="text" id="gtime" readonly="readonly" maxlength="3" size="3" placeholder="..." />
+										<label >定位权重</label>
+										<input type="text" id="gweight" readonly="readonly" maxlength="3" size="3" placeholder="..." />
+								</td>
+	                        </tr>
+	                        <tr>
+	                        	<td class="th" colspan="2">
+	                                    <label>当前坐标</label>
+	                                    <input type="text" id="gX" readonly="readonly" size="20" placeholder="..." />
+										<input type="text" id="gY" readonly="readonly" size="20" placeholder="..." />
+										<input type="text" id="gZ" readonly="readonly" size="20" placeholder="..." />
+								</td>
+	                        </tr>
+							<tr><td colspan="2" style="text-align: center;">~~~~~~~~~~~~~设置区域~~~~~~~~~~~~</td></tr>
+                            <tr>
+                                <td class="th">
+                                    <label>功能选择</label>
+	                				<select name="fun" id="selectfun">
+	                				    <option value="0">定 位</option>
+	                				    <option value="1">建 库</option>
+	                				    <option value="2">加 载</option>
+	                				</select>
+                                    <label>状态设置</label>
+	                				<select name="state" id="selectstate">
+	                				    <option value="3">确 认</option>
+	                				    <option value="7">取 消</option>
+	                				    <option value="1">就 绪</option>
+	                				</select>
+                                </td>
+                            </tr>
+                           	 <tr>
+								<td class="th" colspan="2">
+	                                <label >定位周期</label>
+									<select name="timeOut" id="selectperiod" >
+                                        <option value="1">1 秒</option>
+                                        <option value="2" selected="selected">2 秒</option>
+                                        <option value="3">3 秒</option>
+                                        <option value="4">4 秒</option>
+                                        <option value="5">5 秒</option>
+                                        <option value="6">6 秒</option>
+                                        <option value="7">7 秒</option>
+                                        <option value="8">8 秒</option>
+                                        <option value="9">9 秒</option>
+                                        <option value="10">10 秒</option>
+                                        <option value="15">15 秒</option>
+                                        <option value="20">20 秒</option>
+                                        <option value="30">30 秒</option>
+                                        <option value="60">60 秒</option>
+                                    </select>
+
+									<label >定位权重</label>
+									<!-- <input type="text" id="sweight" maxlength="3 size="3" placeholder="..." /> -->
+									<select name="weight" id="selectweight" >
+                                        <option value="1">1 次</option>
+                                        <option value="2" selected="selected">2 次</option>
+                                        <option value="3">3 次</option>
+                                        <option value="4">4 次</option>
+                                        <option value="5">5 次</option>
+                                        <option value="6">6 次</option>
+                                        <option value="7">7 次</option>
+                                        <option value="8">8 次</option>
+                                        <option value="9">9 次</option>
+                                        <option value="10">10 次</option>
+                                        <option value="15">15 次</option>
+                                        <option value="20">20 次</option>
+                                        <option value="30">30 次</option>
+                                    </select>
+								</td>
+	                        </tr>
+	                        <tr>
+	                        	<td class="th" colspan="2">
+	                                    <label>建库点位</label>
+	                                    <input type="text" id="sX" name="coordinateX" size="20" placeholder="经度" />
+										<input type="text" id="sY" name="coordinateY" size="20" placeholder="纬度" />
+										<input type="text" id="sZ" name="coordinateZ" size="20" placeholder="楼层" />
+								</td>
+	                        </tr> 
+                            <tr class="g ed">
+                                <td class="th">
+                                	<label>建库设备</label>
+                                	<input type="text" id="smac" name="buildMAC" size="20" placeholder="建库设备MAC,不带分隔号" />
+                                	<label>清空指纹</label>
+                                	<input type="checkbox" name="checkclean" value="cleanup" />
+<!-- 	                				<select name="state" id="selectstate">
+	                				    <option value="0">确 认</option>
+	                				    <option value="1" selected="selected">取 消</option>
+	                				</select> -->
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="operate">
+                            <button type="submit">提交</button>
+                            <input type="hidden" name="pClassID" value="1" />
+                            <input type="hidden" name="pAreaID" value="1" />
+                            <input type="hidden" name="submit" value="build" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <script type="text/javascript">
+				$(".qingchu").click(function(){
+					$("#buildp tr:not(:first)").empty();
+          		 })
+                var fw_type_fullflash = document.getElementById("fw_type_fullflash");
+                var fw_type_generic = document.getElementById("fw_type_generic");
+
+                var fw_files = document.getElementById("fw_files");
+                var fw_files_generic = document.getElementById("fw_files_generic");
+                var fw_files_fullflash = document.getElementById("fw_files_fullflash");
+
+                fw_files.removeChild(fw_files_fullflash);
+                document.body.appendChild(fw_files_fullflash);
+
+                fw_type_generic.onclick = function () {
+                    if (fw_type_generic.className == "fw_type_clicked")
+                        return;
+
+                    fw_type_fullflash.className = "fw_type_unclicked";
+                    fw_type_generic.className = "fw_type_clicked";
+
+                    switch_to_generic();
+                }
+
+                fw_type_fullflash.onclick = function () {
+                    if (fw_type_fullflash.className == "fw_type_clicked")
+                        return;
+
+                    fw_type_generic.className = "fw_type_unclicked";
+                    fw_type_fullflash.className = "fw_type_clicked";
+
+                    switch_to_fullflash();
+                }
+
+                function switch_to_generic () {
+                    fw_files_fullflash.style.display = "none";
+                    fw_files.removeChild(fw_files_fullflash);
+                    document.body.appendChild(fw_files_fullflash);
+
+                    document.body.removeChild(fw_files_generic);
+                    fw_files_generic.style.display = "block";
+                    fw_files.appendChild(fw_files_generic);
+                }
+
+                function switch_to_fullflash () {
+                    document.body.removeChild(fw_files_fullflash);
+                    fw_files_fullflash.style.display = "block";
+                    fw_files.appendChild(fw_files_fullflash);
+
+                    fw_files.removeChild(fw_files_generic);
+                    fw_files_generic.style.display = "none";
+                    document.body.appendChild(fw_files_generic);
+                }
+
+                function hit_checkbox(id, filebin) {
+                    if (filebin != undefined)
+                        document.getElementById(id).checked = (filebin.value != "");
+                }
+
+                function hit_autoreboot(checked) {
+                    document.getElementById("autoreboot").checked = checked;
+                }
+
+                function check_checkbox(id, checkbox) {
+                    if (!checkbox.checked)
+                        document.getElementById(id).value = "";
+                }
+
+                function file_check() {
+                    return true;
+                }
+            </script>
+        </div>
+        <div class="clearfloat"> </div>
+    </div>
+
+
+<script type="text/javascript">
+    var stampn = parseInt(new Date().getTime()/1000);
+    // console.log(stampn);
+
+    XHR.poll(5, '', null, function (argument) {
+        XHR.get('/tool/cgi-bin/getpos.lua', { classid: 1, areaid: 1, stamp: stampn },
+            function(x, info)
+            {
+                // console.log(x.responseText);
+                var datas1 = eval('(' + x.responseText + ')');
+                // console.log(datas1.length);
+                // console.log(stampn);
+                test(datas1, $(".table1"));
+            });
+    });
+
+    function test(data, table) {
+        var count = data.length;
+        var html = '';
+        if(count >= 1)
+        {
+            $("#buildp tr:not(:first)").empty();
+        }
+        for(var i = 0; i < count; i++) {
+            html += "<tr>";
+            html += "<td class='floor'>" + data[i]['coordinateX'] + "</td>";
+            html += "<td class='floor'>" + data[i]['coordinateY'] + "</td>";
+            html += "<td class='floor'>" + data[i]['coordinateZ'] + "</td>";
+            html += "<td class='floor'>" + data[i]['terminalMAC'] + "</td>";
+            html += "<td class='floor'>" + data[i]['timeStamp'] + "</td>";
+            if(data[i]['timeStamp'] > stampn)
+            {
+                stampn = data[i]['timeStamp'];
+            }
+        }
+        table.append(html);
+        // $(".system_info tr:not(:first)").empty();
+    }
+
+</script>
+
+<script type="text/javascript">
+
+    var gstate = document.getElementById("gstate");
+    var gfun = document.getElementById("gfun");
+    var gtime = document.getElementById("gtime");
+    var gweight = document.getElementById("gweight");
+    var gx = document.getElementById("gX");
+    var gy = document.getElementById("gY");
+    var gz = document.getElementById("gZ");
+
+	XHR.get('/tool/cgi-bin/getstate.lua', { classid: 1, areaid: 1 },
+		function(x, info)
+		{
+		    var datas1 = eval('(' + x.responseText + ')');
+		    $("#selectfun").val(datas1[0]['fun']);
+		    $("#selectstate").val(datas1[0]['state']);
+		    $("#selectperiod").val(datas1[0]['timeOut']);
+		    $("#selectweight").val(datas1[0]['weight']);
+		    $("#sX").val(datas1[0]['coordinateX']);
+		    $("#sY").val(datas1[0]['coordinateY']);
+		    $("#sZ").val(datas1[0]['coordinateZ']);
+		    $("#smac").val(datas1[0]['buildMAC'].toUpperCase());
+		});
+
+	XHR.poll(2, '/tool/cgi-bin/getstate.lua', { classid: 1, areaid: 1 },
+		function(x, info)
+		{
+		    // console.log(x.responseText);
+		    var datas1 = eval('(' + x.responseText + ')');
+
+		    gtime.value = datas1[0]['timeOut'] + ' 秒';
+		    gweight.value = datas1[0]['weight'] + '次';
+		    gx.value = datas1[0]['coordinateX'];
+		    gy.value = datas1[0]['coordinateY'];
+		    gz.value = datas1[0]['coordinateZ'];
+
+		    if(0 == datas1[0]['state'] && datas1[0]['fun'] != 0)
+		    {
+		    	gstate.value = '待命...';
+		    }
+		    else if(0 == datas1[0]['state'])
+		    {
+		    	gstate.value = '定位运行中...';
+		    }
+		    else if(1 == datas1[0]['state'])
+		    {
+		    	gstate.value = '未初始化';
+		    }
+		    else if(2 == datas1[0]['state'])
+		    {
+		    	gstate.value = '已初始化';
+		    }
+		    else if(3 == datas1[0]['state'])
+		    {
+		    	gstate.value = '已确认';
+		    }
+		    else if(7 == datas1[0]['state'])
+		    {
+		    	gstate.value = '已取消';
+		    }
+		    else if(8 == datas1[0]['state'])
+		    {
+		    	gstate.value = '请确认或者取消...';
+		    }
+		    else
+		    {
+		    	gstate.value = '未知状态...';
+		    }
+		    if(0 == datas1[0]['fun'])
+		    {
+		    	gfun.value = '定位模式';
+		    	gstate.value = '定位运行中...';
+		    }
+		    else if(1 == datas1[0]['fun'] )
+		    {
+		    	gfun.value = '建库模式';
+		    }
+		    else if(2 == datas1[0]['fun'] )
+		    {
+		    	gfun.value = '载库模式';
+		    }
+		    else if(15 == datas1[0]['fun'] )
+		    {
+		    	gfun.value = '待命模式';
+		    }
+		    else
+		    {
+		    	gfun.value = '未知模式';
+		    }
+		});
+
+</script>
+
+<script type="text/javascript">
+    // var nav_str = "index.html|系统信息,model.html|模式选择,about.html|关于";
+    var nav_str = "index.html|系统信息,model.html|模式选择,map.html|地图查看,about.html|关于";
+    var nav_page = "model.html";
+    var nav_list = nav_str.split(",");
+    var navbar = document.getElementById("navbar");
+    for (var i = 0; i < nav_list.length; i++) {
+        if (!nav_list[i].indexOf("|"))
+            continue;
+        var nav_val = nav_list[i].split("|");
+        var li = document.createElement("li");
+        if (nav_page == nav_val[0]) {
+            li.className = "current_nav";
+            li.appendChild(document.createTextNode(nav_val[1]));
+        } else {
+            var a = document.createElement("a");
+            a.appendChild(document.createTextNode(nav_val[1]));
+            a.setAttribute("href", nav_val[0]);
+            li.appendChild(a);
+        }
+        navbar.appendChild(li);
+    }
+</script>
+</body>
+</html>

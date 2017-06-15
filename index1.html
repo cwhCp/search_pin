@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>BIGD-VIEW</title>
+	<link rel="stylesheet" href="./style/css.css" type="text/css" />
+</head>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/js.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/xhr.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	XHR.poll(3, '/tool/cgi-bin/getpos.lua', { classid: 1, areaid: 1, stamp: 1 },
+		function(x, info)
+		{
+			console.log(x.responseText);
+
+			var datas1 = eval('(' + x.responseText + ')');
+			test(datas1, $(".table1"));
+		});
+
+	function test(data, table) {
+		var count = data.length;
+		var html = '';
+		for(var i = 0; i < count; i++) {
+			html += "<tr>";
+			html += "<td class='floor'>" + data[i]['coordinateX'] + "</td>";
+			html += "<td class='floor'>" + data[i]['coordinateY'] + "</td>";
+			html += "<td class='floor'>" + data[i]['coordinateZ'] + "</td>";
+			html += "<td class='floor'>" + data[i]['terminalMAC'] + "</td>";
+			html += "<td class='floor'>" + data[i]['timeStamp'] + "</td>";
+			// for(x in data[i]) {
+			// 	alert(x)
+			// 	html += "<td class='floor'>" + data[i][x] + "</td>";
+			// }
+		}
+		table.append(html);
+	}
+
+</script>
+
+<body>
+	<div id="container">
+		<div id="page">
+			<div style="width:100%;height: 500px;overflow: auto;margin:0 auto; ">
+				<table class="system_info">
+					<tbody id="mac_table" class="table1">
+						<tr >
+							<td class="th">coordinateX</td>
+							<td class="th">coordinateY</td>
+							<td class="th">coordinateZ</td>
+							<td class="th">terminalMAC</td>
+							<td class="th">timeStamp</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
