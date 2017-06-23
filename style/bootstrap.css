@@ -6769,4 +6769,7 @@ button.close {
 .mgl-8{
   margin-left: 8px;
 }
+#fw_files_fullflash, #fw_skipboot, #fw_skipeeprom, #fw_skipart {
+  display: none;
+}
 /*# sourceMappingURL=bootstrap.css.map */
