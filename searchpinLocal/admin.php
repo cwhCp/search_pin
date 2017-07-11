@@ -141,7 +141,7 @@
                 html.appendChild(create_td_element(( rate ? rate : "None" )));
                 html.appendChild(create_td_element(( time ? time : "None" )));
                 html.appendChild(create_td_element(( lat === "" ? "None" : lat )));
-                html.appendChild(create_td_element(( lon === "" ? "None" + (iIndex++).toString() : (lon + iIndex++).toString()  )));
+                html.appendChild(create_td_element(( lon === "" ? "None" : lon )));
                 html.appendChild(create_td_element(( useData.hasOwnProperty("mac") ? useData.mac : "None" )));
                 html.appendChild(create_td_element(( useData.hasOwnProperty("rssi") ? useData.rssi : "None" )));
                 html.appendChild(create_td_element(( useData.hasOwnProperty("range") ? useData.range : "None" )));
