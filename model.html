@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html>
 <head>
@@ -81,9 +80,9 @@
 	                        <tr>
 	                        	<td class="th" colspan="2">
 	                                    <label>当前坐标</label>
-	                                    <input type="text" id="gX" readonly="readonly" size="20" placeholder="..." />
-										<input type="text" id="gY" readonly="readonly" size="20" placeholder="..." />
-										<input type="text" id="gZ" readonly="readonly" size="20" placeholder="..." />
+	                                    <input type="text" id="gX" readonly="readonly" size="15" placeholder="..." />
+										<input type="text" id="gY" readonly="readonly" size="15" placeholder="..." />
+										<input type="text" id="gZ" readonly="readonly" size="15" placeholder="..." />
 								</td>
 	                        </tr>
 							<tr><td colspan="2" style="text-align: center;">~~~~~~~~~~~~~设置区域~~~~~~~~~~~~</td></tr>
@@ -145,9 +144,9 @@
 	                        <tr>
 	                        	<td class="th" colspan="2">
 	                                    <label>建库点位</label>
-	                                    <input type="text" id="sX" name="coordinateX" size="20" placeholder="经度" />
-										<input type="text" id="sY" name="coordinateY" size="20" placeholder="纬度" />
-										<input type="text" id="sZ" name="coordinateZ" size="20" placeholder="楼层" />
+	                                    <input type="text" id="sX" name="coordinateX" size="15" placeholder="经度" />
+										<input type="text" id="sY" name="coordinateY" size="15" placeholder="纬度" />
+										<input type="text" id="sZ" name="coordinateZ" size="15" placeholder="楼层" />
 								</td>
 	                        </tr> 
                             <tr class="g ed">
@@ -185,7 +184,6 @@
                 var fw_files_fullflash = document.getElementById("fw_files_fullflash");
 
                 fw_files.removeChild(fw_files_fullflash);
-                document.body.appendChild(fw_files_fullflash);
 
                 fw_type_generic.onclick = function () {
                     if (fw_type_generic.className == "fw_type_clicked")
@@ -210,35 +208,18 @@
                 function switch_to_generic () {
                     fw_files_fullflash.style.display = "none";
                     fw_files.removeChild(fw_files_fullflash);
-                    document.body.appendChild(fw_files_fullflash);
 
-                    document.body.removeChild(fw_files_generic);
                     fw_files_generic.style.display = "block";
                     fw_files.appendChild(fw_files_generic);
                 }
 
                 function switch_to_fullflash () {
-                    document.body.removeChild(fw_files_fullflash);
+                    fw_files_generic.style.display = "none";
+                    fw_files.removeChild(fw_files_generic);
+
                     fw_files_fullflash.style.display = "block";
                     fw_files.appendChild(fw_files_fullflash);
 
-                    fw_files.removeChild(fw_files_generic);
-                    fw_files_generic.style.display = "none";
-                    document.body.appendChild(fw_files_generic);
-                }
-
-                function hit_checkbox(id, filebin) {
-                    if (filebin != undefined)
-                        document.getElementById(id).checked = (filebin.value != "");
-                }
-
-                function hit_autoreboot(checked) {
-                    document.getElementById("autoreboot").checked = checked;
-                }
-
-                function check_checkbox(id, checkbox) {
-                    if (!checkbox.checked)
-                        document.getElementById(id).value = "";
                 }
 
                 function file_check() {
@@ -253,11 +234,8 @@
 <script type="text/javascript">
     var stampn = parseInt(new Date().getTime()/1000);
     // console.log(stampn);
-
     XHR.poll(5, '', null, function (argument) {
-        XHR.get('/tool/cgi-bin/getpos.lua', { classid: 1, areaid: 1, stamp: stampn },
-            function(x, info)
-            {
+        XHR.get('/tool/cgi-bin/getpos.lua', { classid: 1, areaid: 1, stamp: stampn }, function(x, info) {
                 // console.log(x.responseText);
                 var datas1 = eval('(' + x.responseText + ')');
                 // console.log(datas1.length);
@@ -288,7 +266,6 @@
         table.append(html);
         // $(".system_info tr:not(:first)").empty();
     }
-
 </script>
 
 <script type="text/javascript">
@@ -301,9 +278,7 @@
     var gy = document.getElementById("gY");
     var gz = document.getElementById("gZ");
 
-	XHR.get('/tool/cgi-bin/getstate.lua', { classid: 1, areaid: 1 },
-		function(x, info)
-		{
+	XHR.get('/tool/cgi-bin/getstate.lua', { classid: 1, areaid: 1 }, function(x, info) {
 		    var datas1 = eval('(' + x.responseText + ')');
 		    $("#selectfun").val(datas1[0]['fun']);
 		    $("#selectstate").val(datas1[0]['state']);
@@ -315,9 +290,7 @@
 		    $("#smac").val(datas1[0]['buildMAC'].toUpperCase());
 		});
 
-	XHR.poll(2, '/tool/cgi-bin/getstate.lua', { classid: 1, areaid: 1 },
-		function(x, info)
-		{
+	XHR.poll(2, '/tool/cgi-bin/getstate.lua', { classid: 1, areaid: 1 }, function(x, info) {
 		    // console.log(x.responseText);
 		    var datas1 = eval('(' + x.responseText + ')');
 
@@ -327,31 +300,32 @@
 		    gy.value = datas1[0]['coordinateY'];
 		    gz.value = datas1[0]['coordinateZ'];
 
-		    if(0 == datas1[0]['state'] && datas1[0]['fun'] != 0)
+            var state = datas1[0]['state']
+		    if(0 == state  && datas1[0]['fun'] != 0)
 		    {
 		    	gstate.value = '待命...';
 		    }
-		    else if(0 == datas1[0]['state'])
+		    else if(0 == state)
 		    {
 		    	gstate.value = '定位运行中...';
 		    }
-		    else if(1 == datas1[0]['state'])
+		    else if(1 == state)
 		    {
 		    	gstate.value = '未初始化';
 		    }
-		    else if(2 == datas1[0]['state'])
+		    else if(2 == state)
 		    {
 		    	gstate.value = '已初始化';
 		    }
-		    else if(3 == datas1[0]['state'])
+		    else if(3 == state)
 		    {
 		    	gstate.value = '已确认';
 		    }
-		    else if(7 == datas1[0]['state'])
+		    else if(7 == state)
 		    {
 		    	gstate.value = '已取消';
 		    }
-		    else if(8 == datas1[0]['state'])
+		    else if(8 == state)
 		    {
 		    	gstate.value = '请确认或者取消...';
 		    }
@@ -359,6 +333,7 @@
 		    {
 		    	gstate.value = '未知状态...';
 		    }
+            
 		    if(0 == datas1[0]['fun'])
 		    {
 		    	gfun.value = '定位模式';
@@ -381,7 +356,6 @@
 		    	gfun.value = '未知模式';
 		    }
 		});
-
 </script>
 
 <script type="text/javascript">

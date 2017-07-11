@@ -167,8 +167,9 @@ XHR.poll = function(interval, url, data, callback)
 		XHR._r = function() {
 			for (var i = 0, e = XHR._q[0]; i < XHR._q.length; e = XHR._q[++i])
 			{
-				if (!(XHR._t % e.interval) && !e.xhr.busy())
+				if (!(XHR._t % e.interval) && !e.xhr.busy()){
 					e.xhr.get(e.url, e.data, e.callback);
+				}
 			}
 			XHR._t++;
 		};

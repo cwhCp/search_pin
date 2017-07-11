@@ -2,6 +2,7 @@
 
 local mysql = require "resty.mysql"
 local json = require "cjson"
+
 local param = _APPWEB
 local pClassID = param.classid
 local pAreaID = param.areaid
@@ -33,8 +34,7 @@ end
 
 local sql_getLoc = [[select fun, state, timeOut, weight, buildMAC, coordinateX, coordinateY, coordinateZ from state where pClassID = '%d' and pAreaID = '%d']]
 
-local res, err, errno, sqlstate =
-db:query(string.format(sql_getLoc, pClassID, pAreaID))
+local res, err, errno, sqlstate = db:query(string.format(sql_getLoc, pClassID, pAreaID))
 if not res then
 	ngx.say("bad result: ", err, ": ", errno, ": ", sqlstate, ".")
 	return

@@ -1,0 +1,269 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>BIGD-控制台</title>
+    <link rel="stylesheet" href="style/bootstrap.css" type="text/css" />
+    <style type="text/css">
+        body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=6kRLk7xLamB9uPmHOLVoXc23IMgH8cpp"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
+</head>
+
+<script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/js.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="js/xhr.js" type="text/javascript" charset="utf-8"></script>
+
+<body>
+    <div class="jumbotron">
+      <h1 class="text-center">BIGD-控制台</h1>
+    </div>
+    <div id="container"  class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <ul class="nav nav-pills nav-stacked">
+                    <li role="presentation"><a class="text-center" href="indexMy.html">系统信息</a></li>
+                    <li role="presentation" ><a class="text-center" href="modelMy.html">模式选择</a></li>
+                    <li role="presentation" class="active"><a class="text-center" href="mapMy.html">地图查看</a></li>
+                    <li role="presentation"><a class="text-center" href="aboutMy.html">关于</a></li>
+                </ul>
+            </div>
+            <div id="page"  class="col-md-9">
+                <div id="fw_type">
+                    <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                        <div class="btn-group" role="group">
+                          <button type="button" id="fw_type_generic"  class="fw_type_clicked btn btn-default">定位展示</button>
+                        </div>
+                        <div class="btn-group" role="group">
+                         <button type="button" id="fw_type_fullflash"  class="fw_type_unclicked btn btn-default">热力图展示</button>
+                        </div>
+                    </div>
+                    <div class="clearfloat"> </div>
+                </div>
+                <div id="fw_files">
+                    <div id="fw_files_generic"> 
+                        <div style="width:100%;height: 450px;overflow: auto;margin:0 auto;" >
+                            <div id="allmap"></div>
+     
+                        </div>
+                    </div>
+
+                    <div id="fw_files_fullflash">
+                        功能开发中...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+ <script type="text/javascript">
+
+    var stampn = parseInt(new Date().getTime()/1000);
+    // stampn = 1496889761;
+
+    // 百度地图API功能
+    var map = new BMap.Map("allmap",{});
+    var cpoint = new BMap.Point(113.391792,22.942048);
+    map.centerAndZoom(cpoint, 15);
+    map.enableScrollWheelZoom(); // 允许滚轮缩放
+    map.enableInertialDragging();
+    map.enableContinuousZoom();
+    var cmarker = new BMap.Marker(cpoint);  // 创建标注
+    map.addOverlay(cmarker);
+    cmarker.addEventListener("click",getAttr);
+
+    //添加切换城市标功能
+    var size = new BMap.Size(10, 20);
+    map.addControl(new BMap.CityListControl({
+        anchor: BMAP_ANCHOR_TOP_LEFT,
+        offset: size,
+        // 切换城市之间事件
+        // onChangeBefore: function(){
+        //    alert('before');
+        // },
+        // 切换城市之后事件
+        // onChangeAfter:function(){
+        //   alert('after');
+        // }
+    }));
+
+    function deletePoint(){
+        var allOverlay = map.getOverlays();
+        for (var i = 0; i < allOverlay.length -1; i++){
+            map.removeOverlay(allOverlay[i]);
+        }
+    }
+
+    function checkPoint(x, y){
+        var info;
+        if (x == 0 || y == 0 ){
+            var bounds = map.getBounds();
+            var sw = bounds.getSouthWest();
+            var ne = bounds.getNorthEast();
+            var lngSpan = Math.abs(sw.lng - ne.lng);
+            var latSpan = Math.abs(ne.lat - sw.lat);
+            info = { 
+                "lon": sw.lng + lngSpan * (Math.random() * 0.7), 
+                "lat": ne.lat - latSpan * (Math.random() * 0.7)
+            }
+        }
+        else{
+            info ={
+                "lon": x,
+                "lat": y
+            }
+        }
+        return info
+    }
+
+    function getAttr(){
+        //获取marker的位置
+        var p = marker.getPosition();    
+        alert("marker的位置是" + p.lng + "," + p.lat);
+    }
+
+    function drawpoint(x) {
+        var marker, point, gp;
+        var support = null;
+        // 添加海量点数据
+        var points = [];
+        var markers = [];
+        var datas1 = eval('(' + x.responseText + ')');
+        console.log(datas1);
+        for (var i = 0; i < (datas1.length) % 20000; i++)
+        {
+            gp = checkPoint(datas1[i]['coordinateX'], datas1[i]['coordinateY']);
+            if(datas1[i]['timeStamp'] > stampn){
+                stampn = datas1[i]['timeStamp'];
+            }
+
+            // 判断当前浏览器是否支持绘制海量点
+            // if (document.createElement('canvas').getContext) {  
+            if (false) {  
+                points.push(new BMap.Point(gp['lon'], gp['lat']));
+                support = i;
+            } else {
+                // alert('请在chrome、safari、IE8+以上浏览器查看本示例');
+                point = new BMap.Point(parseFloat(gp['lon']), parseFloat(gp['lat']));
+                //创建标注
+                markers.push(new BMap.Marker(point)); 
+                // map.addOverlay(marker);
+                //显示提示标签
+                // label = new BMap.Label(datas1[i]['terminalMAC'],{offset:new BMap.Size(20,-10)});
+                // marker.setLabel(label);
+                //获取该点位经纬度坐标
+                // marker.addEventListener("click",getAttr);
+            }
+        }
+        if(support){
+            var options = {
+                size: BMAP_POINT_SIZE_BIG,
+                // shape: BMAP_POINT_SHAPE_WATERDROP,
+                shape: BMAP_POINT_SHAPE_STAR,
+                color: '#d340c3'
+            }
+            var pointCollection = new BMap.PointCollection(points, options);  // 初始化PointCollection
+            pointCollection.addEventListener('click', function (e) {
+                alert('单击点的坐标为：' + e.point.lng + ',' + e.point.lat);  // 监听点击事件
+            });
+            map.addOverlay(pointCollection);  // 添加Overlay
+            // var markerClusterer = new BMapLib.MarkerClusterer(map, {markers:pointCollection});
+        }
+        else{
+            var markerClusterer = new BMapLib.MarkerClusterer(map, {markers:markers});
+        }
+    }
+
+
+
+    XHR.poll(5, '', null, function (argument) {
+        XHR.get('/tool/cgi-bin/getpos.lua', { classid: 1, areaid: 1, stamp: stampn },
+            function(x, info)
+            {
+                deletePoint();
+                drawpoint(x);
+            });
+    });
+</script>
+
+
+    <script type="text/javascript">
+        $(".qingchu").click(function(){
+            $("#buildp tr:not(:first)").empty();
+        })
+        var fw_type_fullflash = document.getElementById("fw_type_fullflash");
+        var fw_type_generic = document.getElementById("fw_type_generic");
+
+        var fw_files = document.getElementById("fw_files");
+        var fw_files_generic = document.getElementById("fw_files_generic");
+        var fw_files_fullflash = document.getElementById("fw_files_fullflash");
+
+        fw_files.removeChild(fw_files_fullflash);
+        document.body.appendChild(fw_files_fullflash);
+
+        fw_type_generic.onclick = function () {
+            if (fw_type_generic.className == "fw_type_clicked")
+                return;
+
+            fw_type_fullflash.className = "fw_type_unclicked";
+            fw_type_generic.className = "fw_type_clicked";
+
+            switch_to_generic();
+        }
+
+        fw_type_fullflash.onclick = function () {
+            if (fw_type_fullflash.className == "fw_type_clicked")
+                return;
+
+            fw_type_generic.className = "fw_type_unclicked";
+            fw_type_fullflash.className = "fw_type_clicked";
+
+            switch_to_fullflash();
+        }
+
+        function switch_to_generic () {
+            fw_files_fullflash.style.display = "none";
+            fw_files.removeChild(fw_files_fullflash);
+            document.body.appendChild(fw_files_fullflash);
+
+            document.body.removeChild(fw_files_generic);
+            fw_files_generic.style.display = "block";
+            fw_files.appendChild(fw_files_generic);
+        }
+
+        function switch_to_fullflash () {
+            document.body.removeChild(fw_files_fullflash);
+            fw_files_fullflash.style.display = "block";
+            fw_files.appendChild(fw_files_fullflash);
+
+            fw_files.removeChild(fw_files_generic);
+            fw_files_generic.style.display = "none";
+            document.body.appendChild(fw_files_generic);
+        }
+
+        function hit_checkbox(id, filebin) {
+            if (filebin != undefined)
+                document.getElementById(id).checked = (filebin.value != "");
+        }
+
+        function hit_autoreboot(checked) {
+            document.getElementById("autoreboot").checked = checked;
+        }
+
+        function check_checkbox(id, checkbox) {
+            if (!checkbox.checked)
+                document.getElementById(id).value = "";
+        }
+
+        function file_check() {
+            return true;
+        }
+    </script>
+</body>
+</html>
